@@ -1,6 +1,6 @@
 # Next.js Amplify Workshop
 
-![]()
+![Next.js Amplify Workshop](banner.jpg)
 
 In this workshop we'll learn how to build a full stack cloud application with Next.js, GraphQL, & [Amplify](https://docs.amplify.aws/).
 
