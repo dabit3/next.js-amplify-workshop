@@ -484,7 +484,7 @@ import { v4 as uuid } from 'uuid'
 import { useRouter } from 'next/router'
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
-import { createPost } from '../src/graphql/mutations';
+import { createPost } from '../graphql/mutations';
 
 const initialState = { title: '', content: '' }
 
@@ -541,7 +541,7 @@ import { API } from 'aws-amplify'
 import { useRouter } from 'next/router'
 import '../../configureAmplify'
 import ReactMarkdown from 'react-markdown'
-import { listPosts, getPost } from '../../src/graphql/queries';
+import { listPosts, getPost } from '../../graphql/queries';
 
 export default function Home({ post }) {
   const router = useRouter()
@@ -597,7 +597,7 @@ Finally, update __pages/index.js__ to add the author field and author styles:
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { API } from 'aws-amplify'
-import { listPosts } from '../src/graphql/queries'
+import { listPosts } from '../graphql/queries'
 
 export default function Home() {
   const [posts, setPosts] = useState([])
