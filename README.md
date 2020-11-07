@@ -534,10 +534,9 @@ export default withAuthenticator(CreatePost)
 
 This will render a form and a markdown editor, allowing users to create new posts.
 
-Next, create a new folder in the pages directory called __posts__ and a file called __[id].js__ within that folder. In __pages/posts/[id].js__, add the following code:
+Next, create a new folder in the __pages__ directory called __posts__ and a file called __[id].js__ within that folder. In __pages/posts/[id].js__, add the following code:
 
 ```js
-import Head from 'next/head'
 import { API } from 'aws-amplify'
 import { useRouter } from 'next/router'
 import '../../configureAmplify'
