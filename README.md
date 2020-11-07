@@ -18,13 +18,12 @@ The app will be a blogging app with a markdown editor. When you think of many ty
 
 This workshop should take you anywhere between 2 to 3 hours to complete.
 
-### Environment
+### Environment & prerequisites
 
-Before we begin, make sure you have the following installed:
+Before we begin, make sure you have the following:
 
-- Node.js v10.x or later
-- npm v5.x or later
-- git v2.14.1 or later
+- Node.js v10.x or later  installed
+- A valid and confirmed AWS account
 
 We will be working from a terminal using a [Bash shell](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) to run Amplify CLI commands to provision infrastructure and also to run a local version of the Next.js app and test it in a web browser.
 
