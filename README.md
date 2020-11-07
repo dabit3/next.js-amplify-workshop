@@ -246,7 +246,7 @@ Open __pages/index.js__ and add the following code:
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { API } from 'aws-amplify'
-import { listPosts } from '../src/graphql/queries'
+import { listPosts } from '../graphql/queries'
 
 export default function Home() {
   const [posts, setPosts] = useState([])
@@ -338,7 +338,7 @@ Next, add some styling to the UI component by opening __styles/globals.css__ and
 }
 ```
 
-Next, open __src/_app.js__ to add some navigation and styling to be able to navigate to the new Profile page:
+Next, open __src/\_app.js__ to add some navigation and styling to be able to navigate to the new Profile page:
 
 ```js
 import '../styles/globals.css'
