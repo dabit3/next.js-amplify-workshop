@@ -369,7 +369,7 @@ img {
 }
 ```
 
-Next, open __src/\_app.js__ to add some navigation and styling to be able to navigate to the new Profile page:
+Next, open __pages/\_app.js__ to add some navigation and styling to be able to navigate to the new Profile page:
 
 ```js
 import '../styles/globals.css'
