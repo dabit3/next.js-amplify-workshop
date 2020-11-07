@@ -451,7 +451,7 @@ type Post @model
 Next, deploy the updates:
 
 ```sh
-amplify push --y
+$ amplify push --y
 ```
 
 Now, you will have two types of API access:
