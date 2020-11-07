@@ -481,7 +481,7 @@ const postData = await API.graphql({
 Next, create a new page at __pages/create-post.js__ and add the following code:
 
 ```js
-import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
+import { withAuthenticator } from '@aws-amplify/ui-react'
 import { useState } from 'react'
 import { API } from 'aws-amplify'
 import { v4 as uuid } from 'uuid'
@@ -524,7 +524,6 @@ function CreatePost() {
       /> 
       <SimpleMDE value={post.content} onChange={value => setPost({ ...post, content: value })} />
       <button style={buttonStyle} onClick={createNewPost}>Create Post</button>
-      <AmplifySignOut />
     </div>
   )
 }
