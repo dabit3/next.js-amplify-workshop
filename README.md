@@ -8,7 +8,7 @@ In this workshop we'll learn how to build a full stack cloud application with Ne
 
 ### Overview
 
-We'll start from scratch, creating a new Next.js app. We'll then, step by step, use the [Amplify CLI](https://github.com/aws-amplify/amplify-cli) to build out and configure our cloud infrastructure and then use the [Amplify JS Libraries](https://github.com/aws-amplify/amplify-js) to connect the React client application to the APIs we create using the CLI.
+We'll start from scratch, creating a new Next.js app. We'll then, step by step, use the [Amplify CLI](https://github.com/aws-amplify/amplify-cli) to build out and configure our cloud infrastructure and then use the [Amplify JS Libraries](https://github.com/aws-amplify/amplify-js) to connect the Next.js app to the APIs we create using the CLI.
 
 The app will be a blogging app with a markdown editor. When you think of many types of applications like Instagram, Twitter, or Facebook, they consist of a list of items and often the ability to drill down into a single item view. The app we will be building will be very similar to this, displaying a list of posts with images and data like the name, location, and description of the post. You will also be able to see only a view containing only a list of your own posts.
 
@@ -22,7 +22,7 @@ Before we begin, make sure you have the following installed:
 - npm v5.x or later
 - git v2.14.1 or later
 
-We will be working from a terminal using a [Bash shell](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) to run Amplify CLI commands to provision infrastructure and also to run a local version of the React web app and test it in a web browser.
+We will be working from a terminal using a [Bash shell](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) to run Amplify CLI commands to provision infrastructure and also to run a local version of the Next.js app and test it in a web browser.
 
 ### Background needed / level
 
@@ -41,7 +41,7 @@ While some level of React and GraphQL is helpful, this workshop requires zero pr
 
 ## Getting Started - Creating the Next.js Application
 
-To get started, we first need to create a new React project using the [Create React App CLI](https://github.com/facebook/create-react-app).
+To get started, we first need to create a new Next.js project.
 
 ```bash
 $ npx create-next-app amplify-next
@@ -210,7 +210,7 @@ query listPosts {
 
 Now, our API is created & we can test it out in our app!
 
-The first thing we need to do is to configure our React application to be aware of our Amplify project. We can do this by referencing the auto-generated `aws-exports.js` file that was created by the CLI.
+The first thing we need to do is to configure our Next.js app to be aware of our Amplify project. We can do this by referencing the auto-generated `aws-exports.js` file that was created by the CLI.
 
 Create a new file called __configureAmplify.js__ in the root of the project and add the following code:
 
