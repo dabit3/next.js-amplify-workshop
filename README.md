@@ -550,8 +550,8 @@ Next, create a new folder in the __pages__ directory called __posts__ and a file
 ```js
 import { API } from 'aws-amplify'
 import { useRouter } from 'next/router'
-import '../../configureAmplify'
 import ReactMarkdown from 'react-markdown'
+import '../../configureAmplify'
 import { listPosts, getPost } from '../../graphql/queries';
 
 export default function Post({ post }) {
