@@ -433,6 +433,8 @@ $ amplify update api
 ? Choose the additional authorization types you want to configure for the API: Amazon Cognito User Pool
 ```
 
+![Updating the API](update-api.png)
+
 Next, let's update the GraphQL schema to add a new field to identify the author of a post.
 
 Open __amplify/backend/api/NextBlog/schema.graphql__ and update it with the following:
