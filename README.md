@@ -656,6 +656,16 @@ $ npm run dev
 
 You should be able to create new posts and view them dynamically.
 
+### Running a build
+
+To run a build and test it out, run the following:
+
+```sh
+$ npm run build
+
+$ npm start
+```
+
 ## Deployment with Serverless Framework
 
 To deploy to AWS, create a new file at the root of the app called __serverless.yml__. In this file, add the following configuration:
