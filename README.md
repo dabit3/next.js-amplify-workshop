@@ -38,7 +38,6 @@ While some level of React and GraphQL is helpful, this workshop requires zero pr
 
 - GraphQL API with AWS AppSync
 - Authentication
-- Object (image) storage
 - Authorization
 - Hosting
 - Deleting the resources
@@ -55,7 +54,7 @@ Now change into the new app directory & install AWS Amplify, & AWS Amplify UI Re
 
 ```bash
 $ cd amplify-next
-$ npm install aws-amplify @aws-amplify/ui-react react-simplemde-editor react-markdown
+$ npm install aws-amplify @aws-amplify/ui-react react-simplemde-editor react-markdown uuid
 ```
 
 ## Installing the CLI & Initializing a new AWS Amplify Project
