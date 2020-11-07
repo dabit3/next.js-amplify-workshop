@@ -49,7 +49,7 @@ Now change into the new app directory & install AWS Amplify, & AWS Amplify UI Re
 
 ```bash
 $ cd amplify-next
-$ npm install aws-amplify @aws-amplify/ui-react
+$ npm install aws-amplify @aws-amplify/ui-react react-simplemde-editor react-markdown
 ```
 
 ## Installing the CLI & Initializing a new AWS Amplify Project
@@ -88,7 +88,7 @@ $ amplify init
 - Choose your default editor: Visual Studio Code (or your default editor)
 - Please choose the type of app that youre building: javascript
 - What javascript framework are you using: react
-- Source Directory Path: src
+- Source Directory Path: .
 - Distribution Directory Path: build
 - Build Command: npm run-script build
 - Start Command: npm run-script start
@@ -118,7 +118,7 @@ To add a GraphQL API, we can use the following command:
 $ amplify add api
 
 ? Please select from one of the above mentioned services: GraphQL
-? Provide API name: Postagram
+? Provide API name: NextBlog
 ? Choose the default authorization type for the API: API key
 ? Enter a description for the API key: public
 ? After how many days from now the API key should expire (1-365): 365 (or your preferred expiration)
@@ -130,17 +130,15 @@ $ amplify add api
 
 The CLI should open this GraphQL schema in your text editor.
 
-__amplify/backend/api/Postagram/schema.graphql__
+__amplify/backend/api/NextBlog/schema.graphql__
 
 Update the schema to the following:   
 
 ```graphql
 type Post @model {
   id: ID!
-  name: String!
-  location: String!
-  description: String!
-  image: String
+  title: String!
+  content: String!
 }
 ```
 
@@ -158,7 +156,7 @@ $ amplify push
 # You will be walked through the following questions for GraphQL code generation
 ? Do you want to generate code for your newly created GraphQL API? Y
 ? Choose the code generation language target: javascript
-? Enter the file name pattern of graphql queries, mutations and subscriptions: src/graphql/**/*.js
+? Enter the file name pattern of graphql queries, mutations and subscriptions: ./graphql/**/*.js
 ? Do you want to generate/update all possible GraphQL operations - queries, mutations and subscriptions? Yes
 ? Enter maximum statement depth [increase from default if your schema is deeply nested]: 2
 ```
@@ -166,7 +164,6 @@ $ amplify push
 > Alternately, you can run `amplify push -y` to answer __Yes__ to all questions.
 
 Now the API is live and you can start interacting with it!
-
 
 ### Testing the API
 
@@ -183,14 +180,12 @@ In the AppSync dashboard, click on __Queries__ to open the GraphiQL editor. In t
 ```graphql
 mutation createPost {
   createPost(input: {
-    name: "My first post"
-    location: "New York"
-    description: "Best burgers in NYC - Jackson Hole"
+    title: "My first post"
+    content: "Hello world!"
   }) {
     id
-    name
-    location
-    description
+    title
+    content
   }
 }
 ```
@@ -202,21 +197,21 @@ query listPosts {
   listPosts {
     items {
       id
-      name
-      location
-      description
+      title
+      content
     }
   }
 }
 ```
 
-### Configuring the React applicaion
+### Configuring the Next app
 
 Now, our API is created & we can test it out in our app!
 
-The first thing we need to do is to configure our React application to be aware of our Amplify project. We can do this by referencing the auto-generated `aws-exports.js` file that is now in our src folder.
+The first thing we need to do is to configure our React application to be aware of our Amplify project. We can do this by referencing the auto-generated `aws-exports.js` file that was created by the CLI.
 
-To configure the app, open __src/index.js__ and add the following code below the last import:
+Create a new file called __configureAmplify.js__ in the root of the project and add the following code:
+
 
 ```js
 import Amplify from 'aws-amplify'
@@ -224,9 +219,15 @@ import config from './aws-exports'
 Amplify.configure(config)
 ```
 
+Next, open __pages/_app_.js__ and import the Amplify configuration below the last import:
+
+```js
+import '../configureAmplify';
+```
+
 Now, our app is ready to start using our AWS services.
 
-### Interacting with the GraphQL API from our client application - Querying for data
+### Interacting with the GraphQL API from the Next.js application - Querying for data
 
 Now that the GraphQL API is running we can begin interacting with it. The first thing we'll do is perform a query to fetch data from our API.
 
@@ -238,3 +239,149 @@ The main thing to notice in this component is the API call. Take a look at this 
 /* Call API.graphql, passing in the query that we'd like to execute. */
 const postData = await API.graphql({ query: listPosts });
 ```
+
+Open __pages/index.js__ and add the following code:
+
+```js
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { API } from 'aws-amplify'
+import { listPosts } from '../src/graphql/queries'
+
+export default function Home() {
+  const [posts, setPosts] = useState([])
+  useEffect(() => {
+    fetchPosts()
+  }, [])
+  async function fetchPosts() {
+    const postData = await API.graphql({
+      query: listPosts
+    })
+    setPosts(postData.data.listPosts.items)
+  }
+  return (
+    <div>
+      <h1>Posts</h1>
+      {
+        posts.map((post, index) => (
+        <Link key={index} href={`/posts/${post.id}`}>
+          <div style={linkStyle}>
+            <h2>{post.title}</h2>
+          </div>
+        </Link>)
+        )
+      }
+    </div>
+  )
+}
+
+const linkStyle = { cursor: 'pointer', borderBottom: '1px solid rgba(0, 0, 0 ,.1)', padding: '20px 0px' }
+const authorStyle = { color: '#rgba(0, 0, 0, .45)', fontWeight: '600' }
+```
+
+You should be able to view the list of posts. You will not yet be able to click on a post to navigate to the detail view, that is coming up later.
+
+## Adding authentication
+
+Next, let's add some authentication.
+
+To do so, create a new file called __profile__ in the __pages__ directory. Here, add the following code:
+
+```js
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
+import { Auth } from 'aws-amplify'
+import { useState, useEffect } from 'react'
+
+function Profile() {
+  const [user, setUser] = useState(null)
+  useEffect(() => {
+    checkUser()
+  }, [])
+  async function checkUser() {
+    const user = await Auth.currentAuthenticatedUser()
+    setUser(user)
+  }
+  if (!user) return null
+  return (
+    <div>
+      <h2>Profile</h2>
+      <h3>Username: {user.username}</h3>
+      <p>Email: {user.attributes.email}</p>
+      <AmplifySignOut />
+    </div>
+  )
+}
+
+export default withAuthenticator(Profile)
+```
+
+The `withAuthenticator` Amplify UI component will scaffold out an entire authentication flow to allow users to sign up and sign in.
+
+The `AmplifSignOut` button adds a pre-style sign out button.
+
+Next, add some styling to the UI component by opening __styles/globals.css__ and adding the following code:
+
+```css
+:root {
+  --amplify-primary-color: #0072ff;
+  --amplify-primary-tint: #0072ff;
+  --amplify-primary-shade: #0072ff;
+}
+```
+
+Next, open __src/_app.js__ to add some navigation and styling to be able to navigate to the new Profile page:
+
+```js
+import '../styles/globals.css'
+import '../configureAmplify'
+import '../configureAmplify';
+import Link from 'next/link'
+import styles from '../styles/Home.module.css'
+
+function MyApp({ Component, pageProps }) {
+  return (
+  <div>
+    <nav style={navStyle}>
+      <Link href="/">
+        <span style={linkStyle}>Home</span>
+      </Link>
+      <Link href="/create-post">
+        <span style={linkStyle}>Create Post</span>
+      </Link>
+      <Link href="/profile">
+        <span style={linkStyle}>Profile</span>
+      </Link>
+    </nav>
+    <div style={bodyStyle}>
+      <Component {...pageProps} />
+    </div>
+    <footer className={styles.footer}>
+      <a
+        href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Powered by{' '}
+        <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
+      </a>
+    </footer>
+  </div>
+  )
+}
+
+const navStyle = { padding: 20, borderBottom: '1px solid #ddd' }
+const bodyStyle = { height: 'calc(100vh - 190px)', padding: '20px 40px' }
+const linkStyle = {marginRight: 20, cursor: 'pointer'}
+
+export default MyApp
+```
+
+Next, run the app:
+
+```sh
+npm run dev
+```
+
+You should now be able to sign up and view your profile.
+
+> The link to __/create-post__ will not yet work as we have not yet created this page.
