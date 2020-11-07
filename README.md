@@ -433,7 +433,7 @@ $ amplify update api
 
 Next, let's update the GraphQL schema to add a new field to identify the author of a post.
 
-Open __amplify/backend/api/amplifynext/schema.graphql__ and update it with the following:
+Open __amplify/backend/api/NextBlog/schema.graphql__ and update it with the following:
 
 ```graphql
 type Post @model
