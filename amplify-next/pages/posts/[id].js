@@ -4,14 +4,14 @@ import '../../configureAmplify'
 import ReactMarkdown from 'react-markdown'
 import { listPosts, getPost } from '../../graphql/queries';
 
-export default function Home({ post }) {
+export default function Post({ post }) {
   const router = useRouter()
   if (router.isFallback) {
     return <div>Loading...</div>
   }
   return (
     <div>
-      <h3>{post.title}</h3>
+      <h1>{post.title}</h1>
       <div style={markdownStyle}>
         <ReactMarkdown children={post.content} />
       </div>

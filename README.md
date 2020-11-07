@@ -350,13 +350,22 @@ The `withAuthenticator` Amplify UI component will scaffold out an entire authent
 
 The `AmplifSignOut` button adds a pre-style sign out button.
 
-Next, add some styling to the UI component by opening __styles/globals.css__ and adding the following code:
+Next, add some styling to the UI component and our future rendered markdown by opening __styles/globals.css__ and adding the following code:
 
 ```css
 :root {
   --amplify-primary-color: #0072ff;
   --amplify-primary-tint: #0072ff;
   --amplify-primary-shade: #0072ff;
+}
+
+pre {
+  background-color: #ededed;
+  padding: 20px;
+}
+
+img {
+  max-width: 900px;
 }
 ```
 
@@ -553,7 +562,7 @@ export default function Post({ post }) {
   }
   return (
     <div>
-      <h3>{post.title}</h3>
+      <h1>{post.title}</h1>
       <div style={markdownStyle}>
         <ReactMarkdown children={post.content} />
       </div>
