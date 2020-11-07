@@ -682,3 +682,35 @@ To deploy, run the following command from your terminal:
 ```
 npx serverless
 ```
+
+
+## Removing Services
+
+If at any time, or at the end of this workshop, you would like to delete a service from your project & your account, you can do this by running the `amplify remove` command:
+
+```sh
+$ amplify remove auth
+
+$ amplify push
+```
+
+If you are unsure of what services you have enabled at any time, you can run the `amplify status` command:
+
+```sh
+$ amplify status
+```
+
+`amplify status` will give you the list of resources that are currently enabled in your app.
+
+### Deleting the Amplify project and all services
+
+If you'd like to delete the entire project, you can run the `delete` command:
+
+```sh
+$ amplify delete
+```
+
+## Next steps / challenge
+
+1. Enable updating posts
+2. Enable deleting posts
