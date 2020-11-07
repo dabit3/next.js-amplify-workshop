@@ -163,8 +163,6 @@ $ amplify push
 ? Enter maximum statement depth [increase from default if your schema is deeply nested]: 2
 ```
 
-> Alternately, you can run `amplify push -y` to answer __Yes__ to all questions.
-
 Now the API is live and you can start interacting with it!
 
 ### Testing the API
@@ -277,7 +275,17 @@ export default function Home() {
   )
 }
 
-const linkStyle = { cursor: 'pointer', borderBottom: '1px solid rgba(0, 0, 0 ,.1)', padding: '20px 0px' }
+const linkStyle = {
+  cursor: 'pointer',
+  borderBottom: '1px solid rgba(0, 0, 0 ,.1)',
+  padding: '20px 0px'
+}
+```
+
+Next, start the app:
+
+```sh
+npm run dev
 ```
 
 You should be able to view the list of posts. You will not yet be able to click on a post to navigate to the detail view, that is coming up later.
