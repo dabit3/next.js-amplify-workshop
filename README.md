@@ -276,7 +276,6 @@ export default function Home() {
 }
 
 const linkStyle = { cursor: 'pointer', borderBottom: '1px solid rgba(0, 0, 0 ,.1)', padding: '20px 0px' }
-const authorStyle = { color: '#rgba(0, 0, 0, .45)', fontWeight: '600' }
 ```
 
 You should be able to view the list of posts. You will not yet be able to click on a post to navigate to the detail view, that is coming up later.
@@ -385,3 +384,257 @@ npm run dev
 You should now be able to sign up and view your profile.
 
 > The link to __/create-post__ will not yet work as we have not yet created this page.
+
+## Adding authorization
+
+Next, update the API to enable another authorization type to enable both public and private access.
+
+```sh
+amplify update api
+
+? Please select from one of the below mentioned services: GraphQL   
+? Select from the options below: Update auth settings
+? Choose the default authorization type for the API: API key
+? Enter a description for the API key: public
+? After how many days from now the API key should expire (1-365): 365 <or your preferred expiration>
+? Configure additional auth types? Y
+? Choose the additional authorization types you want to configure for the API: Amazon Cognito User Pool
+```
+
+Next, let's update the GraphQL schema to add a new field to identify the author of a post.
+
+Open __amplify/backend/api/amplifynext/schema.graphql__ and update it with the following:
+
+```graphql
+type Post @model
+  @auth(rules: [
+    { allow: owner, ownerField: "username" },
+    { allow: public, operations: [read] }
+  ]) {
+  id: ID!
+  title: String!
+  content: String!
+  username: String
+}
+```
+
+Next, deploy the updates:
+
+```sh
+amplify push --y
+```
+
+Now, you will have two types of API access:
+
+1. Private (Cognito) - to create a post, a user must be signed in. Once they have created a post, they can update and delete their own post. They can also read all posts.
+2. Public (API key) - Any user, regardless if they are signed in, can query for posts or a single post.
+Using this combination, you can easily query for just a single user's posts or for all posts.
+
+To make this secondary private API call from the client, the authorization type needs to be specified in the query or mutation:
+
+```js
+const postData = await API.graphql({
+  mutation: createPost,
+  authMode: 'AMAZON_COGNITO_USER_POOLS',
+  variables: {
+    input: postInfo
+  }
+});
+```
+
+## Adding the Create Post form and page
+
+Next, create a new page at __pages/create-post.js__ and add the following code:
+
+```js
+import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
+import { useState } from 'react'
+import { API } from 'aws-amplify'
+import { v4 as uuid } from 'uuid'
+import { useRouter } from 'next/router'
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
+import { createPost } from '../src/graphql/mutations';
+
+const initialState = { title: '', content: '' }
+
+function CreatePost() {
+  const [post, setPost] = useState(initialState)
+  const { title, content } = post
+  const router = useRouter()
+  function onChange(e) {
+    setPost(() => ({ ...post, [e.target.name]: e.target.value }))
+  }
+  async function createNewPost() {
+    if (!title || !content) return
+    const id = uuid()
+    post.id = id
+    console.log('post: ', post)
+
+    await API.graphql({
+      query: createPost,
+      variables: { input: post },
+      authMode: "AMAZON_COGNITO_USER_POOLS"
+    })
+    router.push(`/posts/${id}`)
+  }
+  return (
+    <div style={containerStyle}>
+      <h2>Create new Post</h2>
+      <input
+        onChange={onChange}
+        name="title"
+        placeholder="Title"
+        value={post.title}
+        style={inputStyle}
+      /> 
+      <SimpleMDE value={post.content} onChange={value => setPost({ ...post, content: value })} />
+      <button style={buttonStyle} onClick={createNewPost}>Create Post</button>
+      <AmplifySignOut />
+    </div>
+  )
+}
+
+const inputStyle = { marginBottom: 10, height: 35, width: 300, padding: 8, fontSize: 16 }
+const containerStyle = { padding: '0px 40px' }
+const buttonStyle = { width: 300, backgroundColor: 'white', border: '1px solid', height: 35, marginBottom: 20, cursor: 'pointer' }
+
+export default withAuthenticator(CreatePost)
+```
+
+This will render a form and a markdown editor, allowing users to create new posts.
+
+Next, create a new folder in the pages directory called __posts__ and a file called __[id].js__ within that folder. In __pages/posts/[id].js__, add the following code:
+
+```js
+import Head from 'next/head'
+import { API } from 'aws-amplify'
+import { useRouter } from 'next/router'
+import '../../configureAmplify'
+import ReactMarkdown from 'react-markdown'
+import { listPosts, getPost } from '../../src/graphql/queries';
+
+export default function Home({ post }) {
+  const router = useRouter()
+  if (router.isFallback) {
+    return <div>Loading...</div>
+  }
+  return (
+    <div>
+      <h3>{post.title}</h3>
+      <div style={markdownStyle}>
+        <ReactMarkdown children={post.content} />
+      </div>
+      <p>Created by: {post.username}</p>
+    </div>
+  )
+}
+
+export async function getStaticPaths() {
+  const postData = await API.graphql({
+    query: listPosts
+  })
+  const paths = postData.data.listPosts.items.map(post => ({ params: { id: post.id }}))
+  return {
+    paths,
+    fallback: true
+  };
+}
+
+export async function getStaticProps ({ params }) {
+  const { id } = params
+  const postData = await API.graphql({
+    query: getPost, variables: { id }
+  })
+  return {
+    props: {
+      post: postData.data.getPost
+    }
+  }
+}
+
+const markdownStyle = { padding: 20, border: '1px solid #ddd', borderRadius: 5 }
+```
+
+This page uses `getStaticPaths` to dynamically create pages at build time based on the posts coming back from the API.
+
+We also use the `fallback` flag to enable fallback routes for dynamic SSG page generation.
+
+`getStaticProps` is used to enable the Post data to be passed into the page as props at build time.
+
+Finally, update __pages/index.js__ to add the author field and author styles:
+
+```js
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { API } from 'aws-amplify'
+import { listPosts } from '../src/graphql/queries'
+
+export default function Home() {
+  const [posts, setPosts] = useState([])
+  useEffect(() => {
+    fetchPosts()
+  }, [])
+  async function fetchPosts() {
+    const postData = await API.graphql({
+      query: listPosts
+    })
+    setPosts(postData.data.listPosts.items)
+  }
+  return (
+    <div>
+      <h1>Posts</h1>
+      {
+        posts.map((post, index) => (
+        <Link key={index} href={`/posts/${post.id}`}>
+          <div style={linkStyle}>
+            <h2>{post.title}</h2>
+            <p style={authorStyle}>Author: {post.username}</p>
+          </div>
+        </Link>)
+        )
+      }
+    </div>
+  )
+}
+
+const linkStyle = { cursor: 'pointer', borderBottom: '1px solid rgba(0, 0, 0 ,.1)', padding: '20px 0px' }
+const authorStyle = { color: 'rgba(0, 0, 0, .55)', fontWeight: '600' }
+```
+
+### Deleting existing data
+
+Now the app is ready to test out, but before we do let's delete the existing data in the database that does not contain an author field. To do so, follow these steps:
+
+1. Open the Amplify Console
+
+```sh
+amplify console
+```
+
+2. Click on __API__, then click on __PostTable__ under the __Data sources__ tab.
+3. Click on the __Items__ tab.
+4. Select the items in the database and delete them by choosing __Delete__ from the __Actions__ button.
+
+Next, run the app:
+
+```sh
+npm run dev
+```
+
+You should be able to create new posts and view them dynamically.
+
+## Deployment with Serverless Framework
+
+To deploy to AWS, create a new file at the root of the app called __serverless.yml__. In this file, add the following configuration:
+
+```yaml
+nextamplified:
+  component: "@sls-next/serverless-component@1.17.0"
+```
+
+To deploy, run the following command from your terminal:
+
+```
+npx serverless
+```
