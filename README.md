@@ -285,7 +285,7 @@ const linkStyle = {
 Next, start the app:
 
 ```sh
-npm run dev
+$ npm run dev
 ```
 
 You should be able to view the list of posts. You will not yet be able to click on a post to navigate to the detail view, that is coming up later.
@@ -293,6 +293,26 @@ You should be able to view the list of posts. You will not yet be able to click 
 ## Adding authentication
 
 Next, let's add some authentication.
+
+To add the authentication service, run the following command using the Amplify CLI:
+
+```sh
+$ amplify add auth
+
+? Do you want to use default authentication and security configuration? Default configuration 
+? How do you want users to be able to sign in when using your Cognito User Pool? Username
+? Do you want to configure advanced settings? No, I am done. 
+```
+
+To deploy the authentication service, you can run the push command:
+
+```sh
+$ amplify push
+
+? Are you sure you want to continue? Yes
+```
+
+Next, let's add a profile screen and login flow to the app.
 
 To do so, create a new file called __profile__ in the __pages__ directory. Here, add the following code:
 
@@ -379,7 +399,7 @@ function MyApp({ Component, pageProps }) {
 }
 
 const navStyle = { padding: 20, borderBottom: '1px solid #ddd' }
-const bodyStyle = { height: 'calc(100vh - 190px)', padding: '20px 40px' }
+const bodyStyle = { minHeight: 'calc(100vh - 190px)', padding: '20px 40px' }
 const linkStyle = {marginRight: 20, cursor: 'pointer'}
 
 export default MyApp
@@ -388,7 +408,7 @@ export default MyApp
 Next, run the app:
 
 ```sh
-npm run dev
+$ npm run dev
 ```
 
 You should now be able to sign up and view your profile.
@@ -629,7 +649,7 @@ amplify console
 Next, run the app:
 
 ```sh
-npm run dev
+$ npm run dev
 ```
 
 You should be able to create new posts and view them dynamically.
