@@ -638,12 +638,15 @@ Now the app is ready to test out, but before we do let's delete the existing dat
 1. Open the Amplify Console
 
 ```sh
-$ amplify console
+$ amplify console api
+
+> Choose GraphQL
 ```
 
-2. Click on __API__, then click on __PostTable__ under the __Data sources__ tab.
-3. Click on the __Items__ tab.
-4. Select the items in the database and delete them by choosing __Delete__ from the __Actions__ button.
+2. Click on __Data sources__
+3. Click on the link to the database
+4. Click on the __Items__ tab.
+5. Select the items in the database and delete them by choosing __Delete__ from the __Actions__ button.
 
 Next, run the app:
 
