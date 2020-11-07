@@ -638,7 +638,7 @@ Now the app is ready to test out, but before we do let's delete the existing dat
 1. Open the Amplify Console
 
 ```sh
-amplify console
+$ amplify console
 ```
 
 2. Click on __API__, then click on __PostTable__ under the __Data sources__ tab.
