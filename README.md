@@ -420,7 +420,7 @@ You should now be able to sign up and view your profile.
 Next, update the API to enable another authorization type to enable both public and private access.
 
 ```sh
-amplify update api
+$ amplify update api
 
 ? Please select from one of the below mentioned services: GraphQL   
 ? Select from the options below: Update auth settings
