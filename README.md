@@ -100,7 +100,7 @@ $ amplify init
 - Please choose the profile you want to use: amplify-cli-user
 ```
 
-The Amplify CLI has initialized a new project & you will see a new folder: __amplify__ & a new file called `aws-exports.js` in the __src__ directory. These files hold your project configuration.
+The Amplify CLI has initialized a new project & you will see a new folder: __amplify__ & a new file called `aws-exports.js` in the root directory. These files hold your project configuration.
 
 To view the status of the amplify project at any time, you can run the Amplify `status` command:
 
