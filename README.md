@@ -512,7 +512,6 @@ function CreatePost() {
     if (!title || !content) return
     const id = uuid()
     post.id = id
-    console.log('post: ', post)
 
     await API.graphql({
       query: createPost,
