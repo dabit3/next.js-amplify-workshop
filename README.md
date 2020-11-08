@@ -1,4 +1,4 @@
-# Next.js Amplify Workshop
+# Next.js AWS Amplify Workshop
 
 ![Next.js Amplify Workshop](banner.jpg)
 
