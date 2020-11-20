@@ -221,7 +221,7 @@ import config from './aws-exports'
 Amplify.configure(config)
 ```
 
-Next, open __pages/\_app_.js__ and import the Amplify configuration below the last import:
+Next, open __pages/\_app.js__ and import the Amplify configuration below the last import:
 
 ```js
 import '../configureAmplify';
