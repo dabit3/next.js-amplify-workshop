@@ -316,7 +316,7 @@ $ amplify push
 
 Next, let's add a profile screen and login flow to the app.
 
-To do so, create a new file called __profile__ in the __pages__ directory. Here, add the following code:
+To do so, create a new file called __profile.js__ in the __pages__ directory. Here, add the following code:
 
 ```js
 import { withAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react'
