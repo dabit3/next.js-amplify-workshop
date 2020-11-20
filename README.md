@@ -348,7 +348,7 @@ export default withAuthenticator(Profile)
 
 The `withAuthenticator` Amplify UI component will scaffold out an entire authentication flow to allow users to sign up and sign in.
 
-The `AmplifSignOut` button adds a pre-style sign out button.
+The `AmplifySignOut` button adds a pre-style sign out button.
 
 Next, add some styling to the UI component and our future rendered markdown by opening __styles/globals.css__ and adding the following code:
 
