@@ -53,7 +53,7 @@ Now change into the new app directory & install AWS Amplify, & AWS Amplify UI Re
 
 ```bash
 $ cd amplify-next
-$ npm install aws-amplify @aws-amplify/ui-react react-simplemde-editor react-markdown uuid
+$ npm install aws-amplify@3.3.8 @aws-amplify/ui-react react-simplemde-editor react-markdown uuid
 ```
 
 ## Installing the CLI & Initializing a new AWS Amplify Project
