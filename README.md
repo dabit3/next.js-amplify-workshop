@@ -374,7 +374,6 @@ Next, open __pages/\_app.js__ to add some navigation and styling to be able to n
 ```js
 import '../styles/globals.css'
 import '../configureAmplify'
-import '../configureAmplify';
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 
