@@ -2,7 +2,7 @@ import { API } from 'aws-amplify'
 import { useRouter } from 'next/router'
 import '../../configureAmplify'
 import ReactMarkdown from 'react-markdown'
-import { listPosts, getPost } from '../../graphql/queries';
+import { listPosts, getPost } from '../../graphql/queries'
 
 export default function Post({ post }) {
   const router = useRouter()
@@ -21,14 +21,12 @@ export default function Post({ post }) {
 }
 
 export async function getStaticPaths() {
-  const postData = await API.graphql({
-    query: listPosts
-  })
+  const postData = await API.graphql({ query: listPosts })
   const paths = postData.data.listPosts.items.map(post => ({ params: { id: post.id }}))
   return {
     paths,
-    fallback: true
-  };
+    fallback: true,
+  }
 }
 
 export async function getStaticProps ({ params }) {
@@ -39,7 +37,8 @@ export async function getStaticProps ({ params }) {
   return {
     props: {
       post: postData.data.getPost
-    }
+    },
+    revalidate: 1
   }
 }
 

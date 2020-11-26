@@ -12,6 +12,7 @@ export default function Home() {
     const postData = await API.graphql({
       query: listPosts
     })
+    console.log('postData: ', postData)
     setPosts(postData.data.listPosts.items)
   }
   return (

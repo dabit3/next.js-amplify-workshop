@@ -1,32 +1,38 @@
-import { withAuthenticator } from '@aws-amplify/ui-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { API } from 'aws-amplify'
-import { v4 as uuid } from 'uuid'
 import { useRouter } from 'next/router'
 import SimpleMDE from "react-simplemde-editor"
 import "easymde/dist/easymde.min.css"
-import { createPost } from '../graphql/mutations'
+import { updatePost } from '../../graphql/mutations'
+import { getPost } from '../../graphql/queries'
 
-const initialState = { title: '', content: '' }
-
-function CreatePost() {
-  const [post, setPost] = useState(initialState)
-  const { title, content } = post
+function EditPost() {
+  const [post, setPost] = useState(null)
   const router = useRouter()
+  const { id } = router.query
+
+  useEffect(() => {
+    fetchPost()
+    async function fetchPost() {
+      if (!id) return
+      const postData = await API.graphql({ query: getPost, variables: { id }})
+      setPost(postData.data.getPost)
+    }
+  }, [id])
+  if (!post) return null
   function onChange(e) {
     setPost(() => ({ ...post, [e.target.name]: e.target.value }))
   }
-  async function createNewPost() {
+  const { title, content } = post
+  async function updateCurrentPost() {
     if (!title || !content) return
-    const id = uuid()
-    post.id = id
-
     await API.graphql({
-      query: createPost,
-      variables: { input: post },
+      query: updatePost,
+      variables: { input: { title, content, id } },
       authMode: "AMAZON_COGNITO_USER_POOLS"
     })
-    router.push(`/posts/${id}`)
+    console.log('post successfully updated!')
+    router.push('/my-posts')
   }
   return (
     <div style={containerStyle}>
@@ -39,7 +45,7 @@ function CreatePost() {
         style={inputStyle}
       /> 
       <SimpleMDE value={post.content} onChange={value => setPost({ ...post, content: value })} />
-      <button style={buttonStyle} onClick={createNewPost}>Create Post</button>
+      <button style={buttonStyle} onClick={updateCurrentPost}>Update Post</button>
     </div>
   )
 }
@@ -48,4 +54,4 @@ const inputStyle = { marginBottom: 10, height: 35, width: 300, padding: 8, fontS
 const containerStyle = { padding: '0px 40px' }
 const buttonStyle = { width: 300, backgroundColor: 'white', border: '1px solid', height: 35, marginBottom: 20, cursor: 'pointer' }
 
-export default withAuthenticator(CreatePost)
+export default EditPost

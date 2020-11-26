@@ -15,10 +15,6 @@ a {
   box-sizing: border-box;
 }
 
-img {
-  max-width: calc(40vw);
-}
-
 :root {
   --amplify-primary-color: #0072ff;
   --amplify-primary-tint: #0072ff;
@@ -32,4 +28,8 @@ pre {
 
 img {
   max-width: 900px;
+}
+
+a {
+  color: #0070f3;
 }
