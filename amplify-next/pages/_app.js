@@ -1,6 +1,5 @@
 import '../styles/globals.css'
 import '../configureAmplify'
-import '../configureAmplify';
 import Link from 'next/link'
 import styles from '../styles/Home.module.css'
 
