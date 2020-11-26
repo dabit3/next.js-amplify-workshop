@@ -224,7 +224,7 @@ Amplify.configure(config)
 Next, open __pages/\_app.js__ and import the Amplify configuration below the last import:
 
 ```js
-import '../configureAmplify';
+import '../configureAmplify'
 ```
 
 Now, our app is ready to start using our AWS services.
@@ -239,7 +239,7 @@ The main thing to notice in this component is the API call. Take a look at this 
 
 ```js
 /* Call API.graphql, passing in the query that we'd like to execute. */
-const postData = await API.graphql({ query: listPosts });
+const postData = await API.graphql({ query: listPosts })
 ```
 
 Open __pages/index.js__ and add the following code:
@@ -485,7 +485,7 @@ const postData = await API.graphql({
   variables: {
     input: postInfo
   }
-});
+})
 ```
 
 ## Adding the Create Post form and page
@@ -498,9 +498,9 @@ import { useState } from 'react'
 import { API } from 'aws-amplify'
 import { v4 as uuid } from 'uuid'
 import { useRouter } from 'next/router'
-import SimpleMDE from "react-simplemde-editor";
-import "easymde/dist/easymde.min.css";
-import { createPost } from '../graphql/mutations';
+import SimpleMDE from "react-simplemde-editor"
+import "easymde/dist/easymde.min.css"
+import { createPost } from '../graphql/mutations'
 
 const initialState = { title: '', content: '' }
 
@@ -555,7 +555,7 @@ import { API } from 'aws-amplify'
 import { useRouter } from 'next/router'
 import ReactMarkdown from 'react-markdown'
 import '../../configureAmplify'
-import { listPosts, getPost } from '../../graphql/queries';
+import { listPosts, getPost } from '../../graphql/queries'
 
 export default function Post({ post }) {
   const router = useRouter()
@@ -581,7 +581,7 @@ export async function getStaticPaths() {
   return {
     paths,
     fallback: true
-  };
+  }
 }
 
 export async function getStaticProps ({ params }) {
@@ -761,7 +761,7 @@ async function authListener() {
       case 'signOut':
         return setSignedInUser(false)
     }
-  });
+  })
   try {
     await Auth.currentAuthenticatedUser()
     setSignedInUser(true)
@@ -791,7 +791,7 @@ npm run dev
 
 Next, let's add a way for a signed in user to edit and delete posts.
 
-First, create a new folder named __edit-posts__ in the __pages__ directory. Then, create a file named __[id].js__.
+First, create a new folder named __edit-posts__ in the __pages__ directory. Then, create a file named __[id].js__ in this folder.
 
 In this file, we'll be accessing the `id` of the post from a route parameter. When the component loads, we will then use the post id from the route to fetch the post data and make it available for editing.
 
@@ -802,10 +802,10 @@ In this file, add the following code:
 import { useEffect, useState } from 'react'
 import { API } from 'aws-amplify'
 import { useRouter } from 'next/router'
-import SimpleMDE from "react-simplemde-editor";
-import "easymde/dist/easymde.min.css";
-import { updatePost } from '../../graphql/mutations';
-import { getPost } from '../../graphql/queries';
+import SimpleMDE from "react-simplemde-editor"
+import "easymde/dist/easymde.min.css"
+import { updatePost } from '../../graphql/mutations'
+import { getPost } from '../../graphql/queries'
 
 function EditPost() {
   const [post, setPost] = useState(null)
