@@ -367,6 +367,10 @@ pre {
 img {
   max-width: 900px;
 }
+
+a {
+  color: #0070f3;
+}
 ```
 
 Next, open __pages/\_app.js__ to add some navigation and styling to be able to navigate to the new Profile page:
@@ -797,7 +801,6 @@ To deploy, run the following command from your terminal:
 ```
 npx serverless
 ```
-
 
 ## Removing Services
 
