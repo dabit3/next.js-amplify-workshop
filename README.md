@@ -18,7 +18,7 @@ We'll start from scratch, creating a new Next.js app. We'll then, step by step, 
 
 The app will be a blogging app with a markdown editor. When you think of many types of applications like Instagram, Twitter, or Facebook, they consist of a list of items and often the ability to drill down into a single item view. The app we will be building will be very similar to this, displaying a list of posts with data like the title, content, and author of the post.
 
-This workshop should take you anywhere between 2 to 3 hours to complete.
+This workshop should take you anywhere between 3 to 6 hours to complete.
 
 ### Environment & prerequisites
 
