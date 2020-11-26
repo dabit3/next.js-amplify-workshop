@@ -787,6 +787,179 @@ Next, test it out by restarting the dev server:
 npm run dev
 ```
 
+## Updating and deleting posts
+
+Next, let's add a way for a signed in user to edit and delete posts.
+
+First, create a new folder named __edit-posts__ in the __pages__ directory. Then, create a file named __[id].js__.
+
+In this file, we'll be accessing the `id` of the post from a route parameter. When the component loads, we will then use the post id from the route to fetch the post data and make it available for editing.
+
+In this file, add the following code:
+
+```js
+// pages/edit-post/[id].js
+import { useEffect, useState } from 'react'
+import { API } from 'aws-amplify'
+import { useRouter } from 'next/router'
+import SimpleMDE from "react-simplemde-editor";
+import "easymde/dist/easymde.min.css";
+import { updatePost } from '../../graphql/mutations';
+import { getPost } from '../../graphql/queries';
+
+function EditPost() {
+  const [post, setPost] = useState(null)
+  const router = useRouter()
+  const { id } = router.query
+
+  useEffect(() => {
+    fetchPost()
+    async function fetchPost() {
+      if (!id) return
+      const postData = await API.graphql({ query: getPost, variables: { id }})
+      setPost(postData.data.getPost)
+    }
+  }, [id])
+  if (!post) return null
+  function onChange(e) {
+    setPost(() => ({ ...post, [e.target.name]: e.target.value }))
+  }
+  const { title, content } = post
+  async function updateCurrentPost() {
+    if (!title || !content) return
+    await API.graphql({
+      query: updatePost,
+      variables: { input: { title, content, id } },
+      authMode: "AMAZON_COGNITO_USER_POOLS"
+    })
+    console.log('post successfully updated!')
+    router.push('/my-posts')
+  }
+  return (
+    <div style={containerStyle}>
+      <h2>Create new Post</h2>
+      <input
+        onChange={onChange}
+        name="title"
+        placeholder="Title"
+        value={post.title}
+        style={inputStyle}
+      /> 
+      <SimpleMDE value={post.content} onChange={value => setPost({ ...post, content: value })} />
+      <button style={buttonStyle} onClick={updateCurrentPost}>Update Post</button>
+    </div>
+  )
+}
+
+const inputStyle = { marginBottom: 10, height: 35, width: 300, padding: 8, fontSize: 16 }
+const containerStyle = { padding: '0px 40px' }
+const buttonStyle = { width: 300, backgroundColor: 'white', border: '1px solid', height: 35, marginBottom: 20, cursor: 'pointer' }
+
+export default EditPost      
+```
+
+Next, open __pages/my-posts.js__. We'll make a few updates to this page:
+
+1. Create the function for deleting a post
+2. Add a link to edit the post by navigating to `/edit-post/:postID`
+3. Add a link to view the post
+4. Create a button for deleting posts
+
+Update this file with the following code:
+
+```js
+// pages/my-posts.js
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { API, Auth } from 'aws-amplify'
+import { postsByUsername } from '../graphql/queries'
+import { deletePost as deletePostMutation } from '../graphql/mutations'
+
+export default function MyPosts() {
+  const [posts, setPosts] = useState([])
+  useEffect(() => {
+    fetchPosts()
+  }, [])
+  async function fetchPosts() {
+    const { username } = await Auth.currentAuthenticatedUser()
+    const postData = await API.graphql({
+      query: postsByUsername, variables: { username }
+    })
+    setPosts(postData.data.postsByUsername.items)
+  }
+  async function deletePost(id) {
+    await API.graphql({
+      query: deletePostMutation,
+      variables: { input: { id } },
+      authMode: "AMAZON_COGNITO_USER_POOLS"
+    })
+    fetchPosts()
+  }
+  return (
+    <div>
+      <h1>My Posts</h1>
+      {
+        posts.map((post, index) => (
+          <div key={index} style={itemStyle}>
+            <h2>{post.title}</h2>
+            <p style={authorStyle}>Author: {post.username}</p>
+            <Link href={`/edit-post/${post.id}`}><a style={linkStyle}>Edit Post</a></Link>
+            <Link href={`/posts/${post.id}`}><a style={linkStyle}>View Post</a></Link>
+            <button
+              style={buttonStyle}
+              onClick={() => deletePost(post.id)}
+            >Delete Post</button>
+          </div>
+        )
+        )
+      }
+    </div>
+  )
+}
+
+const buttonStyle = { cursor: 'pointer', backgroundColor: '#ddd', border: 'none', padding: '5px 20px' }
+const linkStyle = { fontSize: 14, marginRight: 10 }
+const itemStyle = { borderBottom: '1px solid rgba(0, 0, 0 ,.1)', padding: '20px 0px' }
+const authorStyle = { color: 'rgba(0, 0, 0, .55)', fontWeight: '600' }
+```
+
+### Enabling Incremental Static Generation
+
+The last thing we need to do is implement [Incremental Static Generation](https://nextjs.org/docs/basic-features/data-fetching#incremental-static-regeneration). Since we are allowing users to update posts, we need to have a way for our site to render the newly updated posts. 
+
+Incremental Static Regeneration allows you to update existing pages by re-rendering them in the background as traffic comes in.
+
+To enable this, open __pages/posts/[id].js__ and update the `getStaticProps` method with the following:
+
+```js
+
+export async function getStaticProps ({ params }) {
+  const { id } = params
+  const postData = await API.graphql({
+    query: getPost, variables: { id }
+  })
+  return {
+    props: {
+      post: postData.data.getPost
+    },
+    // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    // - At most once every second
+    revalidate: 1 // adds Incremental Static Generation, sets time in seconds
+  }
+}
+```
+
+To test it out, restart the server or run a new build:
+
+```sh
+npm run dev
+
+# or
+
+npm run build && npm start
+```
+
 ## Deployment with Serverless Framework
 
 To deploy to AWS, create a new file at the root of the app called __serverless.yml__. In this file, add the following configuration:
