@@ -676,6 +676,113 @@ $ npm run build
 $ npm start
 ```
 
+## Adding a filtered view for signed in user's posts
+
+In a future step, we will be enabling the ability to edit or delete the posts that were created by the signed in user. Before we enable that functionality, let's first create a view for only viewing the posts created by the signed in user.
+
+To do so, create a new file called __my-posts.js__ in the pages directory. This page will be using the `postsByUsername` query, passing in the username of the signed in user to query for only posts created by that user.
+
+```js
+// pages/my-posts.js
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { API, Auth } from 'aws-amplify'
+import { postsByUsername } from '../graphql/queries'
+
+export default function MyPosts() {
+  const [posts, setPosts] = useState([])
+  useEffect(() => {
+    fetchPosts()
+  }, [])
+  async function fetchPosts() {
+    const { username } = await Auth.currentAuthenticatedUser()
+    const postData = await API.graphql({
+      query: postsByUsername, variables: { username }
+    })
+    setPosts(postData.data.postsByUsername.items)
+  }
+  return (
+    <div>
+      <h1>My Posts</h1>
+      {
+        posts.map((post, index) => (
+        <Link key={index} href={`/posts/${post.id}`}>
+          <div style={linkStyle}>
+            <h2>{post.title}</h2>
+            <p style={authorStyle}>Author: {post.username}</p>
+          </div>
+        </Link>)
+        )
+      }
+    </div>
+  )
+}
+
+const linkStyle = { cursor: 'pointer', borderBottom: '1px solid rgba(0, 0, 0 ,.1)', padding: '20px 0px' }
+const authorStyle = { color: 'rgba(0, 0, 0, .55)', fontWeight: '600' }
+```
+
+### Updating the nav
+
+Next, we need to update the nav to show the link to the new __my-posts__ page, but only show the link if there is a signed in user.
+
+To do so, we'll be using a combination of the `Auth` class as well as `Hub` which allows us to listen to authentication events.
+
+Open __pages/\_app.js__ and make the following updates:
+
+Import the `useState` and `useEffect` hooks from React as well as the `Auth` and `Hub` classes from AWS Amplify:
+
+```js
+import { useState, useEffect } from 'react'
+import { Auth, Hub } from 'aws-amplify'
+```
+
+Next, in the `MyApp` function, create some state to hold the signed in user state:
+
+```js
+const [signedInUser, setSignedInUser] = useState(false)
+```
+
+In the `MyApp` function, create a function to detect and maintain user state and invoke it in a `useEffect` hook:
+
+```js
+useEffect(() => {
+  authListener()
+})
+async function authListener() {
+  Hub.listen('auth', (data) => {
+    switch (data.payload.event) {
+      case 'signIn':
+        return setSignedInUser(true)
+      case 'signOut':
+        return setSignedInUser(false)
+    }
+  });
+  try {
+    await Auth.currentAuthenticatedUser()
+    setSignedInUser(true)
+  } catch (err) {}
+}
+```
+
+Finally, in the navigation, add a link to the new route to show only if a user is currently signed in:
+
+```js
+{
+  signedInUser && (
+    <Link href="/my-posts">
+      <span style={linkStyle}>My Posts</span>
+    </Link>
+  )
+}
+```
+
+Next, test it out by restarting the dev server:
+
+```sh
+npm run dev
+```
+
 ## Deployment with Serverless Framework
 
 To deploy to AWS, create a new file at the root of the app called __serverless.yml__. In this file, add the following configuration:
