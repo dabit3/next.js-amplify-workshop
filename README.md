@@ -1,16 +1,16 @@
 # Next.js AWS Amplify Workshop
 
-![Next.js Amplify Workshop](banner.jpg)
+![Next.js Amplify Workshop](images/banner.jpg)
 
 In this workshop we'll learn how to build a full stack cloud application with Next.js, GraphQL, & [Amplify](https://docs.amplify.aws/).
 
-![App preview](app.png)
+![App preview](images/app.png)
 
-![App preview](app2.png)
+![App preview](images/app2.png)
 
-![App preview](app3.png)
+![App preview](images/app3.png)
 
-![App preview](app4.png)
+![App preview](images/app4.png)
 
 ### Overview
 
