@@ -455,6 +455,7 @@ Open __amplify/backend/api/NextBlog/schema.graphql__ and update it with the foll
 
 ```graphql
 type Post @model
+  @key(name: "postsByUsername", fields: ["username"], queryField: "postsByUsername")
   @auth(rules: [
     { allow: owner, ownerField: "username" },
     { allow: public, operations: [read] }
