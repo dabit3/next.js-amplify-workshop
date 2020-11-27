@@ -866,7 +866,7 @@ export default EditPost
 
 Next, open __pages/my-posts.js__. We'll make a few updates to this page:
 
-1. Create the function for deleting a post
+1. Create a function for deleting a post
 2. Add a link to edit the post by navigating to `/edit-post/:postID`
 3. Add a link to view the post
 4. Create a button for deleting posts
