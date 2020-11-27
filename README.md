@@ -795,7 +795,7 @@ npm run dev
 
 ## Updating and deleting posts
 
-Next, let's add a way for a signed in user to edit and delete posts.
+Next, let's add a way for a signed in user to edit and delete their posts.
 
 First, create a new folder named __edit-posts__ in the __pages__ directory. Then, create a file named __[id].js__ in this folder.
 
