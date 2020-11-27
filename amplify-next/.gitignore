@@ -33,6 +33,8 @@ yarn-error.log*
 # vercel
 .vercel
 
+amplify/team-provider-info.json
+
 #amplify
 amplify/\#current-cloud-backend
 amplify/.config/local-*
