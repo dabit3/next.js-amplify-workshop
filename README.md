@@ -797,7 +797,7 @@ npm run dev
 
 Next, let's add a way for a signed in user to edit and delete their posts.
 
-First, create a new folder named __edit-posts__ in the __pages__ directory. Then, create a file named __[id].js__ in this folder.
+First, create a new folder named __edit-post__ in the __pages__ directory. Then, create a file named __[id].js__ in this folder.
 
 In this file, we'll be accessing the `id` of the post from a route parameter. When the component loads, we will then use the post id from the route to fetch the post data and make it available for editing.
 
