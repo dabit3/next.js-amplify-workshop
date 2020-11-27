@@ -688,7 +688,7 @@ $ npm start
 
 ## Adding a filtered view for signed in user's posts
 
-In a future step, we will be enabling the ability to edit or delete the posts that were created by the signed in user. Before we enable that functionality, let's first create a view for only viewing the posts created by the signed in user.
+In a future step, we will be enabling the ability to edit or delete the posts that were created by the signed in user. Before we enable that functionality, let's first create a page for only viewing the posts created by the signed in user.
 
 To do so, create a new file called __my-posts.js__ in the pages directory. This page will be using the `postsByUsername` query, passing in the username of the signed in user to query for only posts created by that user.
 
@@ -740,20 +740,20 @@ To do so, we'll be using a combination of the `Auth` class as well as `Hub` whic
 
 Open __pages/\_app.js__ and make the following updates:
 
-Import the `useState` and `useEffect` hooks from React as well as the `Auth` and `Hub` classes from AWS Amplify:
+1. Import the `useState` and `useEffect` hooks from React as well as the `Auth` and `Hub` classes from AWS Amplify:
 
 ```js
 import { useState, useEffect } from 'react'
 import { Auth, Hub } from 'aws-amplify'
 ```
 
-Next, in the `MyApp` function, create some state to hold the signed in user state:
+2. In the `MyApp` function, create some state to hold the signed in user state:
 
 ```js
 const [signedInUser, setSignedInUser] = useState(false)
 ```
 
-In the `MyApp` function, create a function to detect and maintain user state and invoke it in a `useEffect` hook:
+3. In the `MyApp` function, create a function to detect and maintain user state and invoke it in a `useEffect` hook:
 
 ```js
 useEffect(() => {
@@ -775,7 +775,7 @@ async function authListener() {
 }
 ```
 
-Finally, in the navigation, add a link to the new route to show only if a user is currently signed in:
+4. In the navigation, add a link to the new route to show only if a user is currently signed in:
 
 ```js
 {
