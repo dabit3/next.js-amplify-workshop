@@ -433,7 +433,7 @@ You should now be able to sign up and view your profile.
 
 ## Adding authorization
 
-Next, update the API to enable another authorization type to enable both public and private access.
+Next, update the API to enable another authorization type to enable both public and private API access.
 
 ```sh
 $ amplify update api
@@ -449,7 +449,10 @@ $ amplify update api
 
 ![Updating the API](images/update-api.png)
 
-Next, let's update the GraphQL schema to add a new field to identify the author of a post.
+Next, let's update the GraphQL schema with the following changes:
+
+1. A new field to identify the author of a post.
+2. An `@key` directive for enabling a new data access pattern to query posts by username
 
 Open __amplify/backend/api/NextBlog/schema.graphql__ and update it with the following:
 
