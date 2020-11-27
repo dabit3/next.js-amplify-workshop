@@ -451,7 +451,7 @@ $ amplify update api
 
 Next, let's update the GraphQL schema with the following changes:
 
-1. A new field to identify the author of a post.
+1. A new field (`username`) to identify the author of a post.
 2. An `@key` directive for enabling a new data access pattern to query posts by username
 
 Open __amplify/backend/api/NextBlog/schema.graphql__ and update it with the following:
