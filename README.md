@@ -6,6 +6,7 @@ In this workshop we'll learn how to build a full stack cloud application with Ne
 
 <details>
   <summary>What you'll be building.</summary>
+
 ![App preview](images/app.png)
 
 ![App preview](images/app2.png)
