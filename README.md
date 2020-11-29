@@ -4,6 +4,8 @@
 
 In this workshop we'll learn how to build a full stack cloud application with Next.js, GraphQL, & [Amplify](https://docs.amplify.aws/).
 
+<details>
+  <summary>What you'll be building.</summary>
 ![App preview](images/app.png)
 
 ![App preview](images/app2.png)
@@ -11,6 +13,7 @@ In this workshop we'll learn how to build a full stack cloud application with Ne
 ![App preview](images/app3.png)
 
 ![App preview](images/app4.png)
+</details>
 
 ### Overview
 
