@@ -976,7 +976,7 @@ To deploy to AWS, create a new file at the root of the app called __serverless.y
 
 ```yaml
 nextamplified:
-  component: "@sls-next/serverless-component@1.17.0"
+  component: "@sls-next/serverless-component@1.18.0"
 ```
 
 To deploy, run the following command from your terminal:
