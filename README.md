@@ -69,7 +69,14 @@ $ npm install aws-amplify @aws-amplify/ui-react react-simplemde-editor react-mar
 Next, we'll install the AWS Amplify CLI:
 
 ```bash
+# NPM
 $ npm install -g @aws-amplify/cli
+
+# cURL (Mac & Linux)
+curl -sL https://aws-amplify.github.io/amplify-cli/install | bash && $SHELL
+
+# cURL (Windows)
+curl -sL https://aws-amplify.github.io/amplify-cli/install-win -o install.cmd && install.cmd
 ```
 
 Now we need to configure the CLI with our credentials.
