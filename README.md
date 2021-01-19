@@ -1,4 +1,4 @@
-# Next.js AWS Amplify Workshop
+# Full Stack Cloud Development with Next.js, AWS, and Tailwind
 
 ![Next.js Amplify Workshop](images/banner.jpg)
 
