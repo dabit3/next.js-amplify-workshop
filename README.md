@@ -62,6 +62,34 @@ $ cd amplify-next
 $ npm install aws-amplify @aws-amplify/ui-react react-simplemde-editor react-markdown uuid
 ```
 
+Since we will be using Tailwind, let's also install the tailwind dependencies:
+
+```sh
+npm install tailwindcss@latest postcss@latest autoprefixer@latest @tailwindcss/typography
+```
+
+Next, create the necessary Tailwind configuration files:
+
+```sh
+npx tailwindcss init -p
+```
+
+Now update __tailwind.config.js__ to add the Tailwind `typography` plugin to the array of plugins:
+
+```js
+plugins: [
+  require('@tailwindcss/typography')
+],
+```
+
+Finally, replace the styles in __styles.globals.css__ with the following:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
 ## Installing the CLI & Initializing a new AWS Amplify Project
 
 ### Installing the CLI
@@ -97,7 +125,7 @@ $ amplify configure
 
 ### Initializing A New Project
 
-```bash
+```bashin
 $ amplify init
 
 - Enter a name for the project: amplifynext
@@ -106,7 +134,7 @@ $ amplify init
 - Please choose the type of app that youre building: javascript
 - What javascript framework are you using: react
 - Source Directory Path: . (this sets the base directory to the root directory)
-- Distribution Directory Path: build
+- Distribution Directory Path: .next
 - Build Command: npm run-script build
 - Start Command: npm run-script start
 - Do you want to use an AWS profile? Y
@@ -280,7 +308,7 @@ export default function Home() {
       {
         posts.map((post, index) => (
         <Link key={index} href={`/posts/${post.id}`}>
-          <div style={linkStyle}>
+          <div className="cursor-pointer border-b border-gray-300	mt-8 pb-4">
             <h2>{post.title}</h2>
           </div>
         </Link>)
@@ -288,12 +316,6 @@ export default function Home() {
       }
     </div>
   )
-}
-
-const linkStyle = {
-  cursor: 'pointer',
-  borderBottom: '1px solid rgba(0, 0, 0 ,.1)',
-  padding: '20px 0px'
 }
 ```
 
@@ -348,9 +370,9 @@ function Profile() {
   if (!user) return null
   return (
     <div>
-      <h2>Profile</h2>
-      <h3>Username: {user.username}</h3>
-      <p>Email: {user.attributes.email}</p>
+      <h1 className="text-3xl font-semibold tracking-wide mt-6">Profile</h1>
+      <h3 className="font-medium text-gray-500 my-2">Username: {user.username}</h3>
+      <p className="text-sm text-gray-500 mb-6">Email: {user.attributes.email}</p>
       <AmplifySignOut />
     </div>
   )
@@ -363,26 +385,13 @@ The `withAuthenticator` Amplify UI component will scaffold out an entire authent
 
 The `AmplifySignOut` button adds a pre-style sign out button.
 
-Next, add some styling to the UI component and our future rendered markdown by opening __styles/globals.css__ and adding the following code:
+Next, add some styling to the UI component by opening __styles/globals.css__ and adding the following code:
 
 ```css
 :root {
   --amplify-primary-color: #0072ff;
   --amplify-primary-tint: #0072ff;
   --amplify-primary-shade: #0072ff;
-}
-
-pre {
-  background-color: #ededed;
-  padding: 20px;
-}
-
-img {
-  max-width: 900px;
-}
-
-a {
-  color: #0070f3;
 }
 ```
 
@@ -392,42 +401,27 @@ Next, open __pages/\_app.js__ to add some navigation and styling to be able to n
 import '../styles/globals.css'
 import '../configureAmplify'
 import Link from 'next/link'
-import styles from '../styles/Home.module.css'
 
 function MyApp({ Component, pageProps }) {
   return (
   <div>
-    <nav style={navStyle}>
+    <nav className="p-6 border-b border-gray-300">
       <Link href="/">
-        <span style={linkStyle}>Home</span>
+        <span className="mr-6 cursor-pointer">Home</span>
       </Link>
       <Link href="/create-post">
-        <span style={linkStyle}>Create Post</span>
+        <span className="mr-6 cursor-pointer">Create Post</span>
       </Link>
       <Link href="/profile">
-        <span style={linkStyle}>Profile</span>
+        <span className="mr-6 cursor-pointer">Profile</span>
       </Link>
     </nav>
-    <div style={bodyStyle}>
+    <div className="py-8 px-16">
       <Component {...pageProps} />
     </div>
-    <footer className={styles.footer}>
-      <a
-        href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Powered by{' '}
-        <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-      </a>
-    </footer>
   </div>
   )
 }
-
-const navStyle = { padding: 20, borderBottom: '1px solid #ddd' }
-const bodyStyle = { minHeight: 'calc(100vh - 190px)', padding: '20px 40px' }
-const linkStyle = {marginRight: 20, cursor: 'pointer'}
 
 export default MyApp
 ```
@@ -541,24 +535,24 @@ function CreatePost() {
     router.push(`/posts/${id}`)
   }
   return (
-    <div style={containerStyle}>
-      <h2>Create new Post</h2>
+    <div>
+      <h1 className="text-3xl font-semibold tracking-wide mt-6">Create new post</h1>
       <input
         onChange={onChange}
         name="title"
         placeholder="Title"
         value={post.title}
-        style={inputStyle}
+        className="border-b pb-2 text-lg my-4 focus:outline-none w-full font-light text-gray-500 placeholder-gray-500 y-2"
       /> 
       <SimpleMDE value={post.content} onChange={value => setPost({ ...post, content: value })} />
-      <button style={buttonStyle} onClick={createNewPost}>Create Post</button>
+      <button
+        type="button"
+        className="mb-4 bg-blue-600 text-white font-semibold px-8 py-2 rounded-lg"
+        onClick={createNewPost}
+      >Create Post</button>
     </div>
   )
 }
-
-const inputStyle = { marginBottom: 10, height: 35, width: 300, padding: 8, fontSize: 16 }
-const containerStyle = { padding: '0px 40px' }
-const buttonStyle = { width: 300, backgroundColor: 'white', border: '1px solid', height: 35, marginBottom: 20, cursor: 'pointer' }
 
 export default withAuthenticator(CreatePost)
 ```
@@ -581,11 +575,11 @@ export default function Post({ post }) {
   }
   return (
     <div>
-      <h1>{post.title}</h1>
-      <div style={markdownStyle}>
-        <ReactMarkdown children={post.content} />
+      <h1 className="text-5xl mt-4 font-semibold tracking-wide">{post.title}</h1>
+      <p className="text-sm font-light my-4">by {post.username}</p>
+      <div className="mt-8">
+        <ReactMarkdown className='prose' children={post.content} />
       </div>
-      <p>Created by: {post.username}</p>
     </div>
   )
 }
@@ -612,8 +606,6 @@ export async function getStaticProps ({ params }) {
     }
   }
 }
-
-const markdownStyle = { padding: 20, border: '1px solid #ddd', borderRadius: 5 }
 ```
 
 This page uses `getStaticPaths` to dynamically create pages at build time based on the posts coming back from the API.
@@ -643,13 +635,13 @@ export default function Home() {
   }
   return (
     <div>
-      <h1>Posts</h1>
+      <h1 className="text-3xl font-semibold tracking-wide mt-6 mb-2">Posts</h1>
       {
         posts.map((post, index) => (
         <Link key={index} href={`/posts/${post.id}`}>
-          <div style={linkStyle}>
-            <h2>{post.title}</h2>
-            <p style={authorStyle}>Author: {post.username}</p>
+          <div className="cursor-pointer border-b border-gray-300	mt-8 pb-4">
+            <h2 className="text-xl font-semibold">{post.title}</h2>
+            <p className="text-gray-500 mt-2">Author: {post.username}</p>
           </div>
         </Link>)
         )
@@ -657,9 +649,6 @@ export default function Home() {
     </div>
   )
 }
-
-const linkStyle = { cursor: 'pointer', borderBottom: '1px solid rgba(0, 0, 0 ,.1)', padding: '20px 0px' }
-const authorStyle = { color: 'rgba(0, 0, 0, .55)', fontWeight: '600' }
 ```
 
 ### Deleting existing data
@@ -724,13 +713,13 @@ export default function MyPosts() {
   }
   return (
     <div>
-      <h1>My Posts</h1>
+      <h1 className="text-3xl font-semibold tracking-wide mt-6 mb-2">My Posts</h1>
       {
         posts.map((post, index) => (
         <Link key={index} href={`/posts/${post.id}`}>
-          <div style={linkStyle}>
-            <h2>{post.title}</h2>
-            <p style={authorStyle}>Author: {post.username}</p>
+          <div className="cursor-pointer border-b border-gray-300	mt-8 pb-4">
+            <h2 className="text-xl font-semibold">{post.title}</h2>
+            <p className="text-gray-500 mt-2">Author: {post.username}</p>
           </div>
         </Link>)
         )
@@ -738,9 +727,6 @@ export default function MyPosts() {
     </div>
   )
 }
-
-const linkStyle = { cursor: 'pointer', borderBottom: '1px solid rgba(0, 0, 0 ,.1)', padding: '20px 0px' }
-const authorStyle = { color: 'rgba(0, 0, 0, .55)', fontWeight: '600' }
 ```
 
 ### Updating the nav
@@ -792,7 +778,7 @@ async function authListener() {
 {
   signedInUser && (
     <Link href="/my-posts">
-      <span style={linkStyle}>My Posts</span>
+      <span className="mr-6 cursor-pointer">My Posts</span>
     </Link>
   )
 }
@@ -853,26 +839,24 @@ function EditPost() {
     router.push('/my-posts')
   }
   return (
-    <div style={containerStyle}>
-      <h2>Create new Post</h2>
+    <div>
+      <h1 className="text-3xl font-semibold tracking-wide mt-6 mb-2">Edit post</h1>
       <input
         onChange={onChange}
         name="title"
         placeholder="Title"
         value={post.title}
-        style={inputStyle}
+        className="border-b pb-2 text-lg my-4 focus:outline-none w-full font-light text-gray-500 placeholder-gray-500 y-2"
       /> 
       <SimpleMDE value={post.content} onChange={value => setPost({ ...post, content: value })} />
-      <button style={buttonStyle} onClick={updateCurrentPost}>Update Post</button>
+      <button
+        className="mb-4 bg-blue-600 text-white font-semibold px-8 py-2 rounded-lg"
+        onClick={updateCurrentPost}>Update Post</button>
     </div>
   )
 }
 
-const inputStyle = { marginBottom: 10, height: 35, width: 300, padding: 8, fontSize: 16 }
-const containerStyle = { padding: '0px 40px' }
-const buttonStyle = { width: 300, backgroundColor: 'white', border: '1px solid', height: 35, marginBottom: 20, cursor: 'pointer' }
-
-export default EditPost      
+export default EditPost       
 ```
 
 Next, open __pages/my-posts.js__. We'll make a few updates to this page:
@@ -914,30 +898,24 @@ export default function MyPosts() {
   }
   return (
     <div>
-      <h1>My Posts</h1>
+      <h1 className="text-3xl font-semibold tracking-wide mt-6 mb-2">My Posts</h1>
       {
         posts.map((post, index) => (
-          <div key={index} style={itemStyle}>
-            <h2>{post.title}</h2>
-            <p style={authorStyle}>Author: {post.username}</p>
-            <Link href={`/edit-post/${post.id}`}><a style={linkStyle}>Edit Post</a></Link>
-            <Link href={`/posts/${post.id}`}><a style={linkStyle}>View Post</a></Link>
+          <div key={index} className="border-b border-gray-300	mt-8 pb-4">
+            <h2 className="text-xl font-semibold">{post.title}</h2>
+            <p className="text-gray-500 mt-2 mb-2">Author: {post.username}</p>
+            <Link href={`/edit-post/${post.id}`}><a className="text-sm mr-4">Edit Post</a></Link>
+            <Link href={`/posts/${post.id}`}><a className="text-sm mr-4">View Post</a></Link>
             <button
-              style={buttonStyle}
+              className="text-sm mr-4"
               onClick={() => deletePost(post.id)}
             >Delete Post</button>
           </div>
-        )
-        )
+        ))
       }
     </div>
   )
 }
-
-const buttonStyle = { cursor: 'pointer', backgroundColor: '#ddd', border: 'none', padding: '5px 20px' }
-const linkStyle = { fontSize: 14, marginRight: 10 }
-const itemStyle = { borderBottom: '1px solid rgba(0, 0, 0 ,.1)', padding: '20px 0px' }
-const authorStyle = { color: 'rgba(0, 0, 0, .55)', fontWeight: '600' }
 ```
 
 ### Enabling Incremental Static Generation
