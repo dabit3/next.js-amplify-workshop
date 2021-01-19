@@ -9,11 +9,11 @@ In this workshop we'll learn how to build a full stack cloud application with Ne
 
 ![App preview](images/app.png)
 
-![App preview](images/app2.png)
+![App preview](images/app-2.png)
 
-![App preview](images/app3.png)
+![App preview](images/app-3.png)
 
-![App preview](images/app4.png)
+![App preview](images/app-4.png)
 </details>
 
 ### Overview
