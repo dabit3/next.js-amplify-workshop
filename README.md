@@ -389,9 +389,9 @@ Next, add some styling to the UI component by opening __styles/globals.css__ and
 
 ```css
 :root {
-  --amplify-primary-color: #0072ff;
-  --amplify-primary-tint: #0072ff;
-  --amplify-primary-shade: #0072ff;
+  --amplify-primary-color: #2563EB;
+  --amplify-primary-tint: #2563EB;
+  --amplify-primary-shade: #2563EB;
 }
 ```
 
