@@ -24,6 +24,18 @@ The app will be a multi-user blogging platform with a markdown editor. When you 
 
 This workshop should take you anywhere between 3 to 6 hours to complete.
 
+### TOC
+
+- [Getting Started](#getting-started---creating-the-nextjs-application)
+- [Adding an API](#adding-an-aws-appsync-graphql-api)
+- [Adding authentication](#adding-authentication)
+- [Enabling post creation](#adding-the-create-post-form-and-page)
+- [Adding a my-posts view](#adding-a-filtered-view-for-signed-in-users-posts)
+- [Updating and deleting posts](#updating-and-deleting-posts)
+- [Adding a cover image](#adding-a-cover-image-with-amazon-s3)
+- [Deploying to AWS](#deployment-with-serverless-framework)
+- [Removing services](#removing-services)
+
 ### Environment & prerequisites
 
 Before we begin, make sure you have the following:
@@ -1383,8 +1395,3 @@ If you'd like to delete the entire project, you can run the `delete` command:
 ```sh
 $ amplify delete
 ```
-
-## Next steps / challenge
-
-1. Enable updating posts
-2. Enable deleting posts
