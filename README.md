@@ -2,7 +2,7 @@
 
 ![Next.js Amplify Workshop](images/banner.jpg)
 
-In this workshop we'll learn how to build a full stack cloud application with Next.js, Tailwind, GraphQL, & [AWS Amplify](https://docs.amplify.aws/).
+In this workshop we'll learn how to build a full stack cloud application with [Next.js](https://nextjs.org/), [Tailwind](https://tailwindcss.com/), & [AWS Amplify](https://docs.amplify.aws/).
 
 <details>
   <summary>What you'll be building.</summary>
