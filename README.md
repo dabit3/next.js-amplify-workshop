@@ -67,7 +67,7 @@ To get started, we first need to create a new Next.js project.
 $ npx create-next-app amplify-next
 ```
 
-Now change into the new app directory & install AWS Amplify, AWS Amplify UI React and a few other libraried we'll be using:
+Now change into the new app directory & install AWS Amplify, AWS Amplify UI React and a few other libraries we'll be using:
 
 ```bash
 $ cd amplify-next
