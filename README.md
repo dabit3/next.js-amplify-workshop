@@ -1,4 +1,4 @@
-# Full Stack Cloud Development with Next.js, AWS, and Tailwind
+# Building a multi-user blogging platform with with Next.js, Tailwind, and AWS
 
 ![Next.js Amplify Workshop](images/banner.jpg)
 
@@ -954,6 +954,394 @@ npm run dev
 
 npm run build && npm start
 ```
+
+## Adding a cover image with Amazon S3
+
+Next, let's give users the ability to add a cover image to their post.
+
+To do so, we need to do the following things:
+
+1. Add the `storage` category to the Amplify project.
+2. Update the GraphQL schema to add a `coverImage` field to the `Post` type
+3. Update the UI to enable users to upload images
+4. Update the UI to render the cover image (if it exists)
+
+To get started, let's first open the GraphQL schema located at __amplify/backend/api/NextBlog/schema.graphql__ and add a `coverImage` field:
+
+```graphql
+type Post @model
+  @key(name: "postsByUsername", fields: ["username"], queryField: "postsByUsername")
+  @auth(rules: [
+    { allow: owner, ownerField: "username" },
+    { allow: public, operations: [read] }
+  ]) {
+  id: ID!
+  title: String!
+  content: String!
+  username: String
+  coverImage: String
+}
+```
+
+Next, enable file storage by running the Amplify `add` command:
+
+```sh
+amplify add storage
+
+? Please select from one of the below mentioned services: Content (Images, audio, video, etc.)
+? Please provide a friendly name for your resource that will be used to label this category in the project: projectimages
+? Please provide bucket name: <your-globally-unique-bucket-name>
+? Who should have access: Auth and guest users
+? What kind of access do you want for Authenticated users? create/update, read, delete
+? What kind of access do you want for Guest users? read
+? Do you want to add a Lambda Trigger for your S3 Bucket? No
+```
+
+Next, deploy the back end:
+
+```sh
+amplify push --y
+```
+
+### Allowing users to upload a cover image
+
+Next, let's enable the ability to upload a cover image when creating a post.
+
+To do so, open __pages/create-post.js__.
+
+We will be making the following updates.
+
+1. Adding a button to enable users to upload a file and save it in the local state
+2. Import the Amplify `Storage` category and `useRef` from React.
+3. When creating a new post, we will check to see if there is an image in the local state, and if there is then upload the image to S3 and store the image key along with the other post data.
+4. When a user uploads an image, show a preview of the image in the UI
+
+```js
+import { withAuthenticator } from '@aws-amplify/ui-react'
+import { useState, useRef } from 'react' // new
+import { API, Storage } from 'aws-amplify'
+import { v4 as uuid } from 'uuid'
+import { useRouter } from 'next/router'
+import SimpleMDE from "react-simplemde-editor"
+import "easymde/dist/easymde.min.css"
+import { createPost } from '../graphql/mutations'
+
+const initialState = { title: '', content: '' }
+
+function CreatePost() {
+  const [post, setPost] = useState(initialState)
+  const [image, setImage] = useState(null)
+  const hiddenFileInput = useRef(null);
+  const { title, content } = post
+  const router = useRouter()
+  function onChange(e) {
+    setPost(() => ({ ...post, [e.target.name]: e.target.value }))
+  }
+  async function createNewPost() {
+    if (!title || !content) return
+    const id = uuid() 
+    post.id = id
+    // If there is an image uploaded, store it in S3 and add it to the post metadata
+    if (image) {
+      const fileName = `${image.name}_${uuid()}`
+      post.coverImage = fileName
+      await Storage.put(fileName, image)
+    }
+
+    await API.graphql({
+      query: createPost,
+      variables: { input: post },
+      authMode: "AMAZON_COGNITO_USER_POOLS"
+    })
+    router.push(`/posts/${id}`)
+  }
+  async function uploadImage() {
+    hiddenFileInput.current.click();
+  }
+  function handleChange (e) {
+    const fileUploaded = e.target.files[0];
+    if (!fileUploaded) return
+    setImage(fileUploaded)
+  }
+  return (
+    <div>
+      <h1 className="text-3xl font-semibold tracking-wide mt-6">Create new post</h1>
+      <input
+        onChange={onChange}
+        name="title"
+        placeholder="Title"
+        value={post.title}
+        className="border-b pb-2 text-lg my-4 focus:outline-none w-full font-light text-gray-500 placeholder-gray-500 y-2"
+      /> 
+      {
+        image && (
+          <img src={URL.createObjectURL(image)} className="my-4" />
+        )
+      }
+      <SimpleMDE value={post.content} onChange={value => setPost({ ...post, content: value })} />
+      <input
+        type="file"
+        ref={hiddenFileInput}
+        className="absolute w-0 h-0"
+        onChange={handleChange}
+      />
+      <button
+        className="bg-purple-600 text-white font-semibold px-8 py-2 rounded-lg mr-2" 
+        onClick={uploadImage}        
+      >
+        Upload Cover Image
+      </button>
+      <button
+        type="button"
+        className="mb-4 bg-blue-600 text-white font-semibold px-8 py-2 rounded-lg"
+        onClick={createNewPost}
+      >Create Post</button>
+    </div>
+  )
+}
+
+export default withAuthenticator(CreatePost)
+```
+
+Now, users should be able to upload a cover image along with their post. If there is a cover image present, it will show them a preview.
+
+### Rendering the cover image in the detail view
+
+Next, let's look at how to render the cover image. To do so, we need to check to see if the cover image key exists as part of the post. If it does, we will fetch the image from S3 and render it in the view.
+
+Update __pages/posts/[id].js__ with the following:
+
+```js
+import { API, Storage } from 'aws-amplify'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import ReactMarkdown from 'react-markdown'
+import { listPosts, getPost } from '../../graphql/queries'
+
+export default function Post({ post }) {
+  const [coverImage, setCoverImage] = useState(null)
+  useEffect(() => {
+    updateCoverImage()
+  }, [])
+  async function updateCoverImage() {
+    if (post.coverImage) {
+      const imageKey = await Storage.get(post.coverImage)
+      setCoverImage(imageKey)
+    }
+  }
+  console.log('post: ', post)
+  const router = useRouter()
+  if (router.isFallback) {
+    return <div>Loading...</div>
+  }
+  return (
+    <div>
+      <h1 className="text-5xl mt-4 font-semibold tracking-wide">{post.title}</h1>
+      {
+        coverImage && <img src={coverImage} className="mt-4" />
+      }
+      <p className="text-sm font-light my-4">by {post.username}</p>
+      <div className="mt-8">
+        <ReactMarkdown className='prose' children={post.content} />
+      </div>
+    </div>
+  )
+}
+
+export async function getStaticPaths() {
+  const postData = await API.graphql({
+    query: listPosts
+  })
+  const paths = postData.data.listPosts.items.map(post => ({ params: { id: post.id }}))
+  return {
+    paths,
+    fallback: true
+  }
+}
+
+export async function getStaticProps ({ params }) {
+  const { id } = params
+  const postData = await API.graphql({
+    query: getPost, variables: { id }
+  })
+  return {
+    props: {
+      post: postData.data.getPost
+    }
+  }
+}
+```
+
+### Allowing users the ability to update a cover image
+
+Next, let's enable users to edit a post that contains a cover image. To do so, we'll need to enable similar functionality as we did when allowing users to create a post with a cover image.
+
+We'll need to detect whether a post has a cover image, but also whether they have uploaded a new cover image and save the update if they have done so.
+
+To implement this, update __pages/edit-post/[id].js__ with the following code:
+
+```js
+import { useEffect, useState, useRef } from 'react'
+import { API, Storage } from 'aws-amplify'
+import { useRouter } from 'next/router'
+import SimpleMDE from "react-simplemde-editor"
+import "easymde/dist/easymde.min.css"
+import { v4 as uuid } from 'uuid'
+import { updatePost } from '../../graphql/mutations'
+import { getPost } from '../../graphql/queries'
+
+function EditPost() {
+  const [post, setPost] = useState(null)
+  const router = useRouter()
+  const { id } = router.query
+  const [coverImage, setCoverImage] = useState(null)
+  const [localImage, setLocalImage] = useState(null)
+  const fileInput = useRef(null)
+
+  useEffect(() => {
+    fetchPost()
+    async function fetchPost() {
+      if (!id) return
+      const postData = await API.graphql({ query: getPost, variables: { id }})
+      console.log('postData: ', postData)
+      setPost(postData.data.getPost)
+      if (postData.data.getPost.coverImage) {
+        updateCoverImage(postData.data.getPost.coverImage)
+      }
+    }
+  }, [id])
+  if (!post) return null
+  async function updateCoverImage(coverImage) {
+    const imageKey = await Storage.get(coverImage)
+    setCoverImage(imageKey)
+  }
+  async function uploadImage() {
+    fileInput.current.click();
+  }
+  function handleChange (e) {
+    const fileUploaded = e.target.files[0];
+    if (!fileUploaded) return
+    setCoverImage(fileUploaded)
+    setLocalImage(URL.createObjectURL(fileUploaded))
+  }
+  function onChange(e) {
+    setPost(() => ({ ...post, [e.target.name]: e.target.value }))
+  }
+  const { title, content } = post
+  async function updateCurrentPost() {
+    if (!title || !content) return
+    const postUpdated = {
+      id, content, title
+    }
+    // check to see if there is a cover image and that it has been updated
+    if (coverImage && localImage) {
+      const fileName = `${coverImage.name}_${uuid()}` 
+      postUpdated.coverImage = fileName
+      await Storage.put(fileName, coverImage)
+    }
+    await API.graphql({
+      query: updatePost,
+      variables: { input: postUpdated },
+      authMode: "AMAZON_COGNITO_USER_POOLS"
+    })
+    console.log('post successfully updated!')
+    router.push('/my-posts')
+  }
+  return (
+    <div>
+      <h1 className="text-3xl font-semibold tracking-wide mt-6 mb-2">Edit post</h1>
+      {
+        coverImage && <img src={localImage ? localImage : coverImage} className="mt-4" />
+      }
+      <input
+        onChange={onChange}
+        name="title"
+        placeholder="Title"
+        value={post.title}
+        className="border-b pb-2 text-lg my-4 focus:outline-none w-full font-light text-gray-500 placeholder-gray-500 y-2"
+      /> 
+      <SimpleMDE value={post.content} onChange={value => setPost({ ...post, content: value })} />
+      <input
+        type="file"
+        ref={fileInput}
+        className="absolute w-0 h-0"
+        onChange={handleChange}
+      />
+      <button
+        className="bg-purple-600 text-white font-semibold px-8 py-2 rounded-lg mr-2" 
+        onClick={uploadImage}        
+      >
+        Upload Cover Image
+      </button>
+      <button
+        className="mb-4 bg-blue-600 text-white font-semibold px-8 py-2 rounded-lg"
+        onClick={updateCurrentPost}>Update Post</button>
+    </div>
+  )
+}
+
+export default EditPost 
+```
+
+Now, users should be able to edit the cover image if it exits, or add a cover image for posts that do not contain one.
+
+### Rendering a cover image thumbnail preview
+
+The last thing we may weant to do is give a preview of the cover image in the list of posts on the main index page.
+
+To do so, let's update our code to see if there is a cover image associated with each post. If there is, we'll fetch the image from S3 and then render the post image if it exists.
+
+To implement this, open __pages/index.js__ and update it with the following code:
+
+```js
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { API, Storage } from 'aws-amplify'
+import { listPosts } from '../graphql/queries'
+
+export default function Home() {
+  const [posts, setPosts] = useState([])
+  useEffect(() => {
+    fetchPosts()
+  }, [])
+  async function fetchPosts() {
+    const postData = await API.graphql({
+      query: listPosts
+    })
+    const { items } = postData.data.listPosts
+    // Fetch images from S3 for posts that contain a cover image
+    const postsWithImages = await Promise.all(items.map(async post => {
+      if (post.coverImage) {
+        post.coverImage = await Storage.get(post.coverImage)
+      }
+      return post
+    }))
+    setPosts(postsWithImages)
+  }
+  return (
+    <div>
+      <h1 className="text-3xl font-semibold tracking-wide mt-6 mb-8">Posts</h1>
+      {
+        posts.map((post, index) => (
+        <Link key={index} href={`/posts/${post.id}`}>
+          <div className="my-6 pb-6 border-b border-gray-300	">
+            {
+              post.coverImage && <img src={post.coverImage} className="w-56" />
+            }
+            <div className="cursor-pointer mt-2">
+              <h2 className="text-xl font-semibold">{post.title}</h2>
+              <p className="text-gray-500 mt-2">Author: {post.username}</p>
+            </div>
+          </div>
+        </Link>)
+        )
+      }
+    </div>
+  )
+}
+```
+
+If you'd like to also have the same functionality to preview cover images in the __my-posts.js__ view, try adding the same updates there.
 
 ## Deployment with Serverless Framework
 
