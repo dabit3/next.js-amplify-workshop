@@ -919,7 +919,7 @@ export default function MyPosts() {
             <Link href={`/edit-post/${post.id}`}><a className="text-sm mr-4 text-blue-500">Edit Post</a></Link>
             <Link href={`/posts/${post.id}`}><a className="text-sm mr-4 text-blue-500">View Post</a></Link>
             <button
-              className="text-sm mr-4"
+              className="text-sm mr-4 text-red-500""
               onClick={() => deletePost(post.id)}
             >Delete Post</button>
           </div>
@@ -1029,6 +1029,7 @@ We will be making the following updates.
 4. When a user uploads an image, show a preview of the image in the UI
 
 ```js
+// pages/create-post.js.
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import { useState, useRef } from 'react' // new
 import { API, Storage } from 'aws-amplify'
@@ -1124,6 +1125,7 @@ Next, let's look at how to render the cover image. To do so, we need to check to
 Update __pages/posts/[id].js__ with the following:
 
 ```js
+// pages/posts/[id].js 
 import { API, Storage } from 'aws-amplify'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
@@ -1193,6 +1195,7 @@ We'll need to detect whether a post has a cover image, but also whether they hav
 To implement this, update __pages/edit-post/[id].js__ with the following code:
 
 ```js
+// pages/edit-post/[id].js
 import { useEffect, useState, useRef } from 'react'
 import { API, Storage } from 'aws-amplify'
 import { useRouter } from 'next/router'
@@ -1306,6 +1309,7 @@ To do so, let's update our code to see if there is a cover image associated with
 To implement this, open __pages/index.js__ and update it with the following code:
 
 ```js
+// pages/index.js
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { API, Storage } from 'aws-amplify'
