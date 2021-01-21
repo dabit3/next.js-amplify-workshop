@@ -1,3 +1,4 @@
+// pages/my-posts.js
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { API, Auth } from 'aws-amplify'
@@ -26,27 +27,21 @@ export default function MyPosts() {
   }
   return (
     <div>
-      <h1>My Posts</h1>
+      <h1 className="text-3xl font-semibold tracking-wide mt-6 mb-2">My Posts</h1>
       {
         posts.map((post, index) => (
-          <div key={index} style={itemStyle}>
-            <h2>{post.title}</h2>
-            <p style={authorStyle}>Author: {post.username}</p>
-            <Link href={`/edit-post/${post.id}`}><a style={linkStyle}>Edit Post</a></Link>
-            <Link href={`/posts/${post.id}`}><a style={linkStyle}>View Post</a></Link>
+          <div key={index} className="border-b border-gray-300	mt-8 pb-4">
+            <h2 className="text-xl font-semibold">{post.title}</h2>
+            <p className="text-gray-500 mt-2 mb-2">Author: {post.username}</p>
+            <Link href={`/edit-post/${post.id}`}><a className="text-sm mr-4 text-blue-500">Edit Post</a></Link>
+            <Link href={`/posts/${post.id}`}><a className="text-sm mr-4 text-blue-500">View Post</a></Link>
             <button
-              style={buttonStyle}
+              className="text-sm mr-4 text-red-500"
               onClick={() => deletePost(post.id)}
             >Delete Post</button>
           </div>
-        )
-        )
+        ))
       }
     </div>
   )
 }
-
-const buttonStyle = { cursor: 'pointer', backgroundColor: '#ddd', border: 'none', padding: '5px 20px' }
-const linkStyle = { fontSize: 14, marginRight: 10 }
-const itemStyle = { borderBottom: '1px solid rgba(0, 0, 0 ,.1)', padding: '20px 0px' }
-const authorStyle = { color: 'rgba(0, 0, 0, .55)', fontWeight: '600' }

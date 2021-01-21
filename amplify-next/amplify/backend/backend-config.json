@@ -1,14 +1,6 @@
 {
-  "auth": {
-    "nextamplify11970dfc": {
-      "service": "Cognito",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [],
-      "customAuth": false
-    }
-  },
   "api": {
-    "nextamplify": {
+    "NextBlog": {
       "service": "AppSync",
       "providerPlugin": "awscloudformation",
       "output": {
@@ -24,12 +16,26 @@
             {
               "authenticationType": "AMAZON_COGNITO_USER_POOLS",
               "userPoolConfig": {
-                "userPoolId": "authnextamplify11970dfc"
+                "userPoolId": "authamplifynextff86daff"
               }
             }
           ]
         }
       }
+    }
+  },
+  "auth": {
+    "amplifynextff86daff": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  },
+  "storage": {
+    "projectimages": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
     }
   }
 }

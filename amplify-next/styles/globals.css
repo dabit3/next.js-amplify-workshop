@@ -1,35 +1,9 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --amplify-primary-color: #0072ff;
-  --amplify-primary-tint: #0072ff;
-  --amplify-primary-shade: #0072ff;
-}
-
-pre {
-  background-color: #ededed;
-  padding: 20px;
-}
-
-img {
-  max-width: 900px;
-}
-
-a {
-  color: #0070f3;
+  --amplify-primary-color: #2563EB;
+  --amplify-primary-tint: #2563EB;
+  --amplify-primary-shade: #2563EB;
 }

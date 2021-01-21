@@ -1,12 +1,12 @@
 {
-  "projectName": "nextamplify",
+  "projectName": "amplifynext",
   "version": "3.0",
   "frontend": "javascript",
   "javascript": {
     "framework": "react",
     "config": {
       "SourceDir": ".",
-      "DistributionDir": "build",
+      "DistributionDir": ".next",
       "BuildCommand": "npm run-script build",
       "StartCommand": "npm run-script start"
     }
