@@ -919,7 +919,7 @@ export default function MyPosts() {
             <Link href={`/edit-post/${post.id}`}><a className="text-sm mr-4 text-blue-500">Edit Post</a></Link>
             <Link href={`/posts/${post.id}`}><a className="text-sm mr-4 text-blue-500">View Post</a></Link>
             <button
-              className="text-sm mr-4 text-red-500""
+              className="text-sm mr-4 text-red-500"
               onClick={() => deletePost(post.id)}
             >Delete Post</button>
           </div>
