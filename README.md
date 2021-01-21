@@ -1,4 +1,4 @@
-# Building a multi-user blogging platform with with Next.js, Tailwind, and AWS
+# Building a multi-user blogging platform with Next.js, Tailwind, and AWS
 
 ![Next.js Amplify Workshop](images/banner.jpg)
 
