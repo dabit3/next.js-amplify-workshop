@@ -34,7 +34,7 @@ yarn-error.log*
 .vercel
 
 .serverless
-.serverless_nextj
+.serverless_nextjs
 .vscode
 
 #amplify
