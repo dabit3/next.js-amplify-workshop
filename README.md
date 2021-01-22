@@ -94,7 +94,7 @@ plugins: [
 ],
 ```
 
-Finally, replace the styles in __styles.globals.css__ with the following:
+Finally, replace the styles in __styles/globals.css__ with the following:
 
 ```css
 @tailwind base;
