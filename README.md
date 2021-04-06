@@ -149,7 +149,7 @@ $ amplify init
 - Distribution Directory Path: .next
 - Build Command: npm run-script build
 - Start Command: npm run-script start
-- Do you want to use an AWS profile? Y
+- Select the authentication method you want to use: AWS profile
 - Please choose the profile you want to use: amplify-cli-user (or your preferred profile)
 ```
 
