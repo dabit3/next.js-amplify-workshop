@@ -1302,7 +1302,7 @@ Now, users should be able to edit the cover image if it exits, or add a cover im
 
 ### Rendering a cover image thumbnail preview
 
-The last thing we may weant to do is give a preview of the cover image in the list of posts on the main index page.
+The last thing we may want to do is give a preview of the cover image in the list of posts on the main index page.
 
 To do so, let's update our code to see if there is a cover image associated with each post. If there is, we'll fetch the image from S3 and then render the post image if it exists.
 
