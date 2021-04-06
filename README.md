@@ -40,7 +40,7 @@ This workshop should take you anywhere between 1 to 4 hours to complete.
 
 Before we begin, make sure you have the following:
 
-- Node.js v10.x or later  installed
+- Node.js v12.x or later installed
 - A valid and confirmed AWS account
 
 We will be working from a terminal using a [Bash shell](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) to run Amplify CLI commands to provision infrastructure and also to run a local version of the Next.js app and test it in a web browser.
