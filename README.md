@@ -1298,7 +1298,7 @@ function EditPost() {
 export default EditPost 
 ```
 
-Now, users should be able to edit the cover image if it exits, or add a cover image for posts that do not contain one.
+Now, users should be able to edit the cover image if it exists, or add a cover image for posts that do not contain one.
 
 ### Rendering a cover image thumbnail preview
 
