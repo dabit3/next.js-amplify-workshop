@@ -1407,3 +1407,13 @@ If you'd like to delete the entire project, you can run the `delete` command:
 ```sh
 $ amplify delete
 ```
+
+### Removing the Serverless Framework deployment
+
+If you'd like to delete the deployed project, ruyn:
+
+```sh
+$ npx serverless remove
+```
+
+> You might need to again set `AWS_PROFILE` like you did for the deployment. Note that [some resources only get disabled, not deleted](https://github.com/serverless-nextjs/serverless-next.js/issues/757).
