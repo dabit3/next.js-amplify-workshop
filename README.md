@@ -1371,8 +1371,16 @@ nextamplified:
 To deploy, run the following command from your terminal:
 
 ```
+# Mac & Linux
+export AWS_PROFILE="amplify-cli-user"
+
+# Windows
+set AWS_PROFILE=amplify-cli-user
+
 npx serverless
 ```
+
+> Make sure that `amplify-cli-user` matches the profile name that you used when you ran `amplify configure` as part of [Installing the CLI](#installing-the-cli). Unfortunatelly, the component doesn't have an input to set the AWS Profile nor picks up on [`--aws-profile`](https://www.serverless.com/framework/docs/providers/aws/guide/credentials/), so we need to use an environment variable. If you get `AccessDenied`, check if `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` aren't set as well, as they [override](https://github.com/serverless-nextjs/serverless-next.js/issues/968) the profile. In that case, temporarily set those to the profile's values found in `~/.aws/credentials`.
 
 ## Removing Services
 
