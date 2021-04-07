@@ -1379,7 +1379,7 @@ npx serverless
 If at any time, or at the end of this workshop, you would like to delete a service from your project & your account, you can do this by running the `amplify remove` command:
 
 ```sh
-$ amplify remove auth
+$ amplify remove storage
 
 $ amplify push
 ```
