@@ -33,7 +33,7 @@ This workshop should take you anywhere between 1 to 4 hours to complete.
 - [Adding a my-posts view](#adding-a-filtered-view-for-signed-in-users-posts)
 - [Updating and deleting posts](#updating-and-deleting-posts)
 - [Adding a cover image](#adding-a-cover-image-with-amazon-s3)
-- [Deploying to AWS](#deployment-with-serverless-framework)
+- [Deploying to AWS](#deployment-with-amplify)
 - [Removing services](#removing-services)
 
 ### Environment & prerequisites
@@ -1359,20 +1359,9 @@ export default function Home() {
 
 If you'd like to also have the same functionality to preview cover images in the __my-posts.js__ view, try adding the same updates there.
 
-## Deployment with Serverless Framework
+## Deployment with amplify
 
-To deploy to AWS, create a new file at the root of the app called __serverless.yml__. In this file, add the following configuration:
-
-```yaml
-nextamplified:
-  component: "@sls-next/serverless-component@1.18.0"
-```
-
-To deploy, run the following command from your terminal:
-
-```
-npx serverless
-```
+To deploy to AWS hosting, follow the guide laid out [here](https://docs.amplify.aws/guides/hosting/nextjs/q/platform/js)
 
 ## Removing Services
 
