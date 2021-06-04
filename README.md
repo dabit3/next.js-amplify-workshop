@@ -71,7 +71,7 @@ Now change into the new app directory & install AWS Amplify, AWS Amplify UI Reac
 
 ```bash
 $ cd amplify-next
-$ npm install aws-amplify @aws-amplify/ui-react react-simplemde-editor react-markdown uuid
+$ npm install aws-amplify @aws-amplify/ui-react react-simplemde-editor@4.1.5 react-markdown uuid
 ```
 
 Since we will be using Tailwind, let's also install the tailwind dependencies:
