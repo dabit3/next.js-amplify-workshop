@@ -141,6 +141,7 @@ $ amplify configure
 $ amplify init
 
 - Enter a name for the project: amplifynext
+- Initialize the project with the above configuration? No
 - Enter a name for the environment: dev
 - Choose your default editor: Visual Studio Code (or your default editor)
 - Please choose the type of app that youre building: javascript
